@@ -59,8 +59,12 @@ Before using this tool, the system administrator need to setup the following con
 ### Homebrew
 
 If you are on a Mac, you can use [Homebrew](https://brew.sh) to install the tool:
-```shell script
-brew tap mbrtargeting/mbr
+```
+brew install mxie1563/mbr/aws-cli-oidc
+```
+or
+```
+brew tap mxie1563/mbr
 brew install aws-cli-oidc
 ```
 
