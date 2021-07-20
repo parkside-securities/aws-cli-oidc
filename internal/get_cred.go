@@ -53,8 +53,9 @@ func GetCred(providerName string, roleARN string, printCred bool, expire int64) 
 		return fmt.Errorf("failed to login OIDC provider: %v", err)
 	}
 	client := &OIDCClient{providerName, config}
-	role := ARNtoShortName(roleARN)
-	tokenResponse, err := getOIDCToken(client, role)
+	//role := ARNtoShortName(roleARN)
+	//role := roleARN
+	tokenResponse, err := getOIDCToken(client, providerName)
 	if err != nil {
 		return fmt.Errorf("failed to login the OIDC provider: %v", err)
 	}
@@ -101,10 +102,12 @@ func GetCred(providerName string, roleARN string, printCred bool, expire int64) 
 func ARNtoShortName(arn string) string {
 	r := regexp.MustCompile("arn:aws:iam:.*:\\d+:role/(\\S+)")
 	role := r.FindStringSubmatch(arn)[1]
+	role0 := r.FindStringSubmatch(arn)[0]
+	println("role:", role0, role)
 	return role
 }
 
-func getOIDCToken(client *OIDCClient, role string) (*oidcToken, error) {
+func getOIDCToken(client *OIDCClient, providerName string) (*oidcToken, error) {
 	conf := &oauth2.Config{
 		ClientID:     client.config.ClientID,
 		ClientSecret: client.config.ClientSecret,
@@ -119,7 +122,7 @@ func getOIDCToken(client *OIDCClient, role string) (*oidcToken, error) {
 	writeBack := false
 
 	var oidcToken *oidcToken = nil
-	jsonRaw, err := getOIDCTokenCache(role)
+	jsonRaw, err := getOIDCTokenCache(providerName)
 	if err != nil {
 		if err != ErrNotFound {
 			return nil, err
@@ -147,7 +150,7 @@ func getOIDCToken(client *OIDCClient, role string) (*oidcToken, error) {
 	if token == nil { // cache miss or expired refresh token
 		writeBack = true
 
-		token, err = doLogin(conf, role)
+		token, err = doLogin(conf, providerName)
 		if err != nil {
 			return nil, err
 		}
@@ -157,7 +160,7 @@ func getOIDCToken(client *OIDCClient, role string) (*oidcToken, error) {
 
 	if writeBack {
 		tokenJSON, _ := json.Marshal(oidcToken)
-		if err := saveOIDCTokenCache(string(tokenJSON), role); err != nil {
+		if err := saveOIDCTokenCache(string(tokenJSON), providerName); err != nil {
 			return nil, err
 		}
 	}
@@ -165,7 +168,7 @@ func getOIDCToken(client *OIDCClient, role string) (*oidcToken, error) {
 	return oidcToken, nil
 }
 
-func doLogin(conf *oauth2.Config, role string) (*oauth2.Token, error) {
+func doLogin(conf *oauth2.Config, providerName string) (*oauth2.Token, error) {
 	address := "localhost:52327"
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
@@ -175,9 +178,9 @@ func doLogin(conf *oauth2.Config, role string) (*oauth2.Token, error) {
 	conf.RedirectURL = "http://" + address
 
 	ctx := context.Background()
-	roleOption := oauth2.SetAuthURLParam("role", role)
+	roleOption := oauth2.SetAuthURLParam("role", providerName)
 	url := conf.AuthCodeURL("state", oauth2.AccessTypeOffline, oauth2.ApprovalForce, roleOption)
-	//println(url)
+	println(url)
 
 	code := launch(url, listener)
 
