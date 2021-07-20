@@ -53,8 +53,6 @@ func GetCred(providerName string, roleARN string, printCred bool, expire int64) 
 		return fmt.Errorf("failed to login OIDC provider: %v", err)
 	}
 	client := &OIDCClient{providerName, config}
-	//role := ARNtoShortName(roleARN)
-	//role := roleARN
 	tokenResponse, err := getOIDCToken(client, providerName)
 	if err != nil {
 		return fmt.Errorf("failed to login the OIDC provider: %v", err)
@@ -180,7 +178,6 @@ func doLogin(conf *oauth2.Config, providerName string) (*oauth2.Token, error) {
 	ctx := context.Background()
 	roleOption := oauth2.SetAuthURLParam("role", providerName)
 	url := conf.AuthCodeURL("state", oauth2.AccessTypeOffline, oauth2.ApprovalForce, roleOption)
-	println(url)
 
 	code := launch(url, listener)
 
