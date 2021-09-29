@@ -1,31 +1,19 @@
-## Change description
+> Choose an appropriate type for your PR title. Prefer feat and fix.
+> Suggestions for dev only tasks include docs, style, refactor, perf, test,
+> build, ci and chore.
 
-> Description here
+## One line description (Update Me!)
 
-## Type of change
-- [ ] Bug fix (fixes an issue)
-- [ ] New feature (adds functionality)
+> detailed description goes here, including aspects like why/what/how the changes are being made,
+> any useful references, anything not in PR but worth mentioning, any screenshots if useful.
 
-## Related issues
+> make sure the pr is not too big and have necessary tests/logging/mock/readme added/updated
 
-> Fix [#1]() 
-
-## Checklists
-
-### Development
-
-- [ ] Lint rules pass locally
-- [ ] Application changes have been tested thoroughly
-- [ ] Automated tests covering modified code pass
+> :fast_forward: Setting `priority` tag in addition to `automerge` puts this PR to the head of the merge queue. :fast_forward:
 
 ### Security
+> Security impact of change has been considered
 
-- [ ] Security impact of change has been considered
-- [ ] Code follows company security practices and guidelines
+> Code follows company security practices and guidelines
 
-### Code review 
-
-- [ ] Pull request has a descriptive title and context useful to a reviewer. Screenshots or screencasts are attached as necessary
-- [ ] "Ready for review" label attached and reviewers assigned
-- [ ] Changes have been reviewed by at least one other contributor
-- [ ] Pull request linked to task tracker where applicable
+BREAKING CHANGES: (list any breaking changes here, remove if NONE)
